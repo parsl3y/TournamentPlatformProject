@@ -1,0 +1,67 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    justify-content: space-between;
+    transition: transform 0.3s ease; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+
+.bodyContent {
+    margin-top: 80px; 
+}
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.header.hidden {
+    transform: translateY(-100%); 
+}
+
+.header.visible {
+    transform: translateY(0); 
+}
+
+
+.logo svg {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+.nav {
+    display: flex;
+}
+
+.navButton {
+    margin: 0 10px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.navButton:hover {
+    text-decoration: underline;
+}
+
+.userActions {
+    display: flex;
+}
+
+.iconButton {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.iconButton:hover {
+    text-decoration: underline;
+}
