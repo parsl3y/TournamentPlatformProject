@@ -46,9 +46,7 @@
     cursor: pointer;
 }
 
-.navButton:hover {
-    text-decoration: underline;
-}
+
 
 .userActions {
     display: flex;

@@ -1,5 +1,6 @@
 bin/
 obj/
+.env
 # Налаштування для Node.js
 node_modules/
 
