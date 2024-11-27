@@ -147,10 +147,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("nick_name");
 
-                    b.Property<byte[]>("Photo")
-                        .HasColumnType("bytea")
-                        .HasColumnName("photo");
-
                     b.Property<int>("Rating")
                         .HasColumnType("integer")
                         .HasColumnName("rating");
@@ -180,6 +176,31 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("players", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Players.PlayerImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("S3Path")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("s3path");
+
+                    b.HasKey("Id")
+                        .HasName("pk_player_image");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_player_image_player_id");
+
+                    b.ToTable("player_image", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Teams.Team", b =>
                 {
                     b.Property<Guid>("Id")
@@ -189,10 +210,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creation_date");
-
-                    b.Property<byte[]>("Icon")
-                        .HasColumnType("bytea")
-                        .HasColumnName("icon");
 
                     b.Property<int>("MatchCount")
                         .HasColumnType("integer")
@@ -215,6 +232,31 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_teams");
 
                     b.ToTable("teams", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Teams.TeamImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("S3Path")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("s3path");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_image");
+
+                    b.HasIndex("TeamId")
+                        .HasDatabaseName("ix_team_image_team_id");
+
+                    b.ToTable("team_image", (string)null);
                 });
 
             modelBuilder.Entity("Domain.TeamsMatchs.TeamMatch", b =>
@@ -377,6 +419,30 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("Domain.Players.PlayerImage", b =>
+                {
+                    b.HasOne("Domain.Players.Player", "Player")
+                        .WithMany("Images")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_game_images_games_id");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("Domain.Teams.TeamImage", b =>
+                {
+                    b.HasOne("Domain.Teams.Team", "Team")
+                        .WithMany("Images")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_game_images_games_id");
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("Domain.TeamsMatchs.TeamMatch", b =>
                 {
                     b.HasOne("Domain.Matches.MatchGame", "MatchGame")
@@ -438,8 +504,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("TeamMatches");
                 });
 
+            modelBuilder.Entity("Domain.Players.Player", b =>
+                {
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("Domain.Teams.Team", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("PlayerTeams");
 
                     b.Navigation("TeamMatches");

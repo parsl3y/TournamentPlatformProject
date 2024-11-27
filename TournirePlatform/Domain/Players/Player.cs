@@ -12,7 +12,7 @@ public class Player
     public Country? Country { get; }
     public GameId GameId { get; }
     public  Game.Game?  Game { get; }
-    public byte[] Photo { get; set; }
+    public ICollection<PlayerImage>? Images { get; }
     public DateTime UpdatedAt { get; private set; }
 
     public TeamId TeamId { get; private set; }
@@ -34,11 +34,10 @@ public class Player
     public static Player New(PlayerId id, string nickName, int rating, CountryId countryId, GameId gameId, TeamId teamId) 
         => new(id,nickName,rating,countryId,gameId, teamId, DateTime.UtcNow);
 
-    public void UpdateDetails(string nickName, int rating, byte[] photo)
+    public void UpdateDetails(string nickName, int rating)
     {
         NickName = nickName;
         Rating = rating;
-        Photo = photo;
         UpdatedAt = DateTime.Now;
     }
     

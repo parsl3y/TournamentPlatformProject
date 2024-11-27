@@ -13,7 +13,6 @@ public record PlayerDto(
     CountryDto? Country,
     Guid GameId,
     GameDto? Game,
-    byte[]? Photo,
     DateTime? UpdateAt,
     Guid TeamId,
     TeamDto? Team
@@ -29,7 +28,6 @@ public record PlayerDto(
     Country: player.Country == null ? null : CountryDto.FromDomainModel(player.Country),
     GameId: player.GameId.Value,
     Game: player.Game == null ? null : GameDto.FromDomainModel(player.Game),
-    Photo: player.Photo,
     UpdateAt: player.UpdatedAt,
     TeamId: player.TeamId.Value,
     Team: player.Team == null ? null : TeamDto.FromDomainModel(player.Team)

@@ -53,7 +53,6 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "varchar(225)", nullable: false),
-                    icon = table.Column<byte[]>(type: "bytea", nullable: true),
                     match_count = table.Column<int>(type: "integer", nullable: false),
                     win_count = table.Column<int>(type: "integer", nullable: false),
                     win_rate = table.Column<double>(type: "double precision", nullable: false),
@@ -127,7 +126,6 @@ namespace Infrastructure.Persistence.Migrations
                     rating = table.Column<int>(type: "integer", nullable: false),
                     country_id = table.Column<Guid>(type: "uuid", nullable: false),
                     game_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    photo = table.Column<byte[]>(type: "bytea", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
                     team_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -152,6 +150,25 @@ namespace Infrastructure.Persistence.Migrations
                         principalTable: "teams",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "team_image",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    team_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    s3path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_team_image", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_game_images_games_id",
+                        column: x => x.team_id,
+                        principalTable: "teams",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,6 +199,25 @@ namespace Infrastructure.Persistence.Migrations
                         principalTable: "tournaments",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "player_image",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    player_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    s3path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_player_image", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_game_images_games_id",
+                        column: x => x.player_id,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -227,6 +263,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "tournament_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_player_image_player_id",
+                table: "player_image",
+                column: "player_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_players_country_id",
                 table: "players",
                 column: "country_id");
@@ -239,6 +280,11 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "ix_players_team_id",
                 table: "players",
+                column: "team_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_team_image_team_id",
+                table: "team_image",
                 column: "team_id");
 
             migrationBuilder.CreateIndex(
@@ -274,10 +320,16 @@ namespace Infrastructure.Persistence.Migrations
                 name: "game_images");
 
             migrationBuilder.DropTable(
-                name: "players");
+                name: "player_image");
+
+            migrationBuilder.DropTable(
+                name: "team_image");
 
             migrationBuilder.DropTable(
                 name: "team_matches");
+
+            migrationBuilder.DropTable(
+                name: "players");
 
             migrationBuilder.DropTable(
                 name: "matches");

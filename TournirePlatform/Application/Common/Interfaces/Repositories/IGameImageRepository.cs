@@ -7,6 +7,7 @@ public interface IGameImageRepository
 {
     Task<IReadOnlyList<GameImage>> GetAll(CancellationToken cancellationToken);
     Task<GameImage> Add(GameImage sneakerImage, CancellationToken cancellationToken);
+    Task<bool> ExistsByGameId(GameId gameId, CancellationToken cancellationToken);
     Task<GameImage> GetById(GameImageId id, CancellationToken cancellationToken);
     Task<IEnumerable<GameImage>> GetByGameId(GameId gameId, CancellationToken cancellationToken);
     Task<bool> Delete(GameImageId id, CancellationToken cancellationToken);

@@ -41,11 +41,10 @@ public class PlayersControllerTests : BaseIntegrationTest, IAsyncLifetime
             GameId: _mainGame.Id.Value,
             Team: null,
             TeamId: _mainTeam.Id.Value,
-            Photo: null,
             UpdateAt: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Player", request);
+        var response = await Client.PostAsJsonAsync("Player/CreatePlayer", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -75,11 +74,10 @@ public class PlayersControllerTests : BaseIntegrationTest, IAsyncLifetime
             GameId: _mainGame.Id.Value,
             Team: null,
             TeamId: _mainTeam.Id.Value,
-            Photo: null,
             UpdateAt: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Player", request);
+        var response = await Client.PostAsJsonAsync("Player/CreatePlayer", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();

@@ -53,8 +53,7 @@ public class PlayerController : ControllerBase
         {
             PlayerId = request.Id!.Value,
             NickName = request.Nickname,
-            Rating = request.rating,
-            Photo = request.Photo,
+            Rating = request.rating
         };
         
         var result = await _sender.Send(input, cancellationToken);

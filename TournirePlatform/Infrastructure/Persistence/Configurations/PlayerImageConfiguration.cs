@@ -1,27 +1,28 @@
 using Domain.Countries;
 using Domain.Faculties;
+using Domain.Players;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class GameImageConfiguration : IEntityTypeConfiguration<GameImage>
+public class PlayerImageConfiguration : IEntityTypeConfiguration<PlayerImage>
 {
-    public void Configure(EntityTypeBuilder<GameImage> builder)
+    public void Configure(EntityTypeBuilder<PlayerImage> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new GameImageId(x));
+        builder.Property(x => x.Id).HasConversion(x => x.Value, x => new PlayerImageId(x));
         
 
         builder.Property(x => x.S3Path)
             .IsRequired()  
             .HasMaxLength(500); 
         
-        builder.Property(x => x.GameId).HasConversion(x => x.Value, x => new GameId(x));
+        builder.Property(x => x.PlayerId).HasConversion(x => x.Value, x => new PlayerId(x));
       
-        builder.HasOne(x => x.Game)
+        builder.HasOne(x => x.Player)
             .WithMany(g => g.Images)
-            .HasForeignKey(x => x.GameId)
+            .HasForeignKey(x => x.PlayerId)
             .HasConstraintName("fk_game_images_games_id")
             .OnDelete(DeleteBehavior.Cascade);
     }
