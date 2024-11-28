@@ -1,4 +1,4 @@
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Application.Common;
 using Application.Common.Interfaces.Queries;
@@ -7,45 +7,46 @@ using Application.Files.Exceptions;
 using Domain.Countries;
 using Domain.Faculties;
 using MediatR;
+using Domain.Players;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Files.Commands;
 
-public class UploadGameImageCommand : IRequest<Result<string, UploadImageException>>
+public class UploadPlayerImageCommand : IRequest<Result<string, UploadImageException>>
 {
-    public required Guid GameId { get; init; }
+    public required Guid PlayerId { get; init; }
     public required IFormFile File { get; init; }
 }
 
- public class UploadGameImageCommandHandler : IRequestHandler<UploadGameImageCommand, Result<string, UploadImageException>>
+ public class UploadPlayerImageCommandHandler : IRequestHandler<UploadPlayerImageCommand, Result<string, UploadImageException>>
     {
         private readonly IAmazonS3 _client;
-        private readonly IGameQueries _gameQueries;
-        private readonly IGameImageRepository _gameImageRepository;
+        private readonly IPlayerQueries _playerQueries;
+        private readonly IPlayerImageRepository _playerImageRepository;
         private readonly string _bucketName;
 
-        public UploadGameImageCommandHandler(IAmazonS3 client, IConfiguration config , IGameQueries gameQueries, IGameRepositories gameRepositories, IGameImageRepository gameImageRepository)
+        public UploadPlayerImageCommandHandler(IAmazonS3 client, IConfiguration config , IPlayerQueries playerQueries, IPlayerRepositories playerRepositories, IPlayerImageRepository playerImageRepository)
         {
             _client = client;
             _bucketName = config["AWS:BucketName"];
-            _gameQueries = gameQueries;
-            _gameImageRepository = gameImageRepository;
+            _playerQueries = playerQueries;
+            _playerImageRepository = playerImageRepository;
         }
 
-        public async Task<Result<string, UploadImageException>> Handle(UploadGameImageCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string, UploadImageException>> Handle(UploadPlayerImageCommand request, CancellationToken cancellationToken)
         {
-            var gameId = new GameId(request.GameId);
+            var playerId = new PlayerId(request.PlayerId);
 
-            var doesImageExist = await _gameImageRepository.ExistsByGameId(gameId, cancellationToken);
+            var doesImageExist = await _playerImageRepository.ExistsByPlayerId(playerId, cancellationToken);
             if (doesImageExist)
             {
-                return new AlreadyHaveAImageException(gameId); 
+                return new AlreadyHavePlayerImageException(playerId); 
             }
 
-            var gameOption = await _gameQueries.GetById(gameId, cancellationToken);
+            var playerOption = await _playerQueries.GetById(playerId, cancellationToken);
 
-            return await gameOption.Match(
+            return await playerOption.Match(
                 async game =>
                 {
                     var fileExtension = Path.GetExtension(request.File.FileName).ToLower();
@@ -61,13 +62,13 @@ public class UploadGameImageCommand : IRequest<Result<string, UploadImageExcepti
 
                     var imageUrl = $"https://{_bucketName}.s3.amazonaws.com/{fileKey}";
 
-                    var gameImage = GameImage.New(new GameImageId(Guid.NewGuid()), gameId, imageUrl);
-                    await _gameImageRepository.Add(gameImage, cancellationToken);
+                    var playerImage = PlayerImage.New(new PlayerImageId(Guid.NewGuid()), playerId, imageUrl);
+                    await _playerImageRepository.Add(playerImage, cancellationToken);
 
                     return imageUrl;
                 },
                 () => Task.FromResult<Result<string, UploadImageException>>(
-                    new NotFoundException(request.GameId))
+                    new NotFoundException(request.PlayerId))
             );
         }
 
