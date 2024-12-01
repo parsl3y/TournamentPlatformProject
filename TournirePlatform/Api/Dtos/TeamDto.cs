@@ -6,7 +6,6 @@ namespace Api.Dtos;
 public record TeamDto(
     Guid Id,
     string Name,
-    byte[]? Icon,
     int MatchCount,
     int WinCount,
     double WinRate,
@@ -19,7 +18,6 @@ public record TeamDto(
         return new TeamDto(
             Id: team.Id.Value,
             Name: team.Name,
-            Icon: team.Icon,
             MatchCount: team.MatchCount,
             WinCount: team.WinCount,
             WinRate: team.WinRate,
@@ -32,7 +30,6 @@ public record TeamDto(
 public record TeamDtoCreate(
         Guid Id,
         string Name,
-        byte[]? Icon,
         int MatchCount,
         int WinCount
     )
@@ -42,7 +39,6 @@ public record TeamDtoCreate(
             return new TeamDtoCreate(
                 Id: team.Id.Value,
                 Name: team.Name,
-                Icon: team.Icon,
                 MatchCount: team.MatchCount,
                 WinCount: team.WinCount
             );

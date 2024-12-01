@@ -1,4 +1,6 @@
 
+using Application.Files.Exceptions;
+
 namespace Application.Common
 {
     public readonly struct Result<TValue, TError>
@@ -30,9 +32,8 @@ namespace Application.Common
             Func<TValue, TResult> success,
             Func<TError, TResult> failure) =>
             IsSuccess ? success(_value!) : failure(_error!);
-
-
-
-        
     }
 }
+
+
+       

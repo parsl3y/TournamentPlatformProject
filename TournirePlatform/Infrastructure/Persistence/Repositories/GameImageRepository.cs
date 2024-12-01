@@ -40,6 +40,14 @@ public class GameImageRepository : IGameImageRepository
             .ToListAsync(cancellationToken);
     }
         
+    public async Task<bool> ExistsByGameId(GameId gameId, CancellationToken cancellationToken)
+    {
+        var gameIdValue = gameId.Value; // Отримуємо значення напряму
+        return await _context.GameImages
+            .AnyAsync(image => image.GameId == gameId, cancellationToken); // Працюватиме!
+    }
+
+    
     public async Task<bool> Delete(GameImageId id, CancellationToken cancellationToken)
     {
         var sneakerImage = await _context.GameImages.FirstOrDefaultAsync(si => si.Id == id, cancellationToken);

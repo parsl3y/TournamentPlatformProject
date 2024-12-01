@@ -44,7 +44,7 @@ namespace Api.Controllers
                 imageUrl => Ok(new { Message = "File uploaded successfully", ImageUrl = imageUrl }),
                 e => e switch
                 {
-                    GameNotFoundException => NotFound(e.Message),
+                    NotFoundException => NotFound(e.Message),
                     FileUploadFailedException => StatusCode(500, e.Message),
                     _ => StatusCode(500, "An unexpected error occurred.")
                 }

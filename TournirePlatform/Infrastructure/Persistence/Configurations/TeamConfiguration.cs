@@ -13,7 +13,6 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
         builder.Property(x => x.Id).HasConversion(x => x.Value, x => new TeamId(x));
         
         builder.Property(x => x.Name).IsRequired().HasColumnType("varchar(225)");
-        builder.Property(x => x.Icon).IsRequired(false);
         builder.Property(x => x.MatchCount).IsRequired();
         builder.Property(x => x.WinCount).IsRequired();
         builder.Property(x => x.WinRate).IsRequired();

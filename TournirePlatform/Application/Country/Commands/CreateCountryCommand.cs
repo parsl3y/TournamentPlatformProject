@@ -7,7 +7,7 @@ using MediatR;
 namespace Application.Countries.Commands;
 
 public class CreateCountryCommand : IRequest<Result<Country, CountryException>>
-{
+{ 
     public required string Name { get; init; }
 }
 

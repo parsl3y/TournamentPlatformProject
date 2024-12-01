@@ -33,10 +33,6 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
             .HasConstraintName("FK_Player_Team")
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Property(x => x.Photo)
-            .IsRequired(false)
-            .HasColumnType("bytea");
-
         builder.Property(x => x.UpdatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");

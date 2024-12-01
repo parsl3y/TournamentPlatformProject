@@ -14,7 +14,6 @@ namespace Application.Teams.Commands;
 public class CreateTeamCommand : IRequest<Result<Team, TeamException>>
 {
     public required string Name { get; set; }
-    public byte[]? Icon { get; set; }
     public required int MatchCount { get; set; }
     public required int WinCount { get; set; }
     public required DateTime CreationDate { get; set; }
@@ -32,11 +31,11 @@ public class CreateTeamCommand : IRequest<Result<Team, TeamException>>
 
             return await existingTeam.Match(
                 t => Task.FromResult<Result<Team, TeamException>>(new TeamAlreadExistsException(t.Id)),
-                async () => await CreateEntity(request.Name, request.Icon, request.MatchCount, request.WinCount,
+                async () => await CreateEntity(request.Name,  request.MatchCount, request.WinCount,
                     cancellationToken));
         }
 
-        private async Task<Result<Team, TeamException>> CreateEntity(string name, byte[]? icon, int matchCount,
+        private async Task<Result<Team, TeamException>> CreateEntity(string name,  int matchCount,
             int winCount, CancellationToken cancellationToken)
         {
             try
@@ -44,7 +43,6 @@ public class CreateTeamCommand : IRequest<Result<Team, TeamException>>
                 var entity = new Team(
                     TeamId.New(),
                     name,
-                    icon,
                     matchCount,
                     winCount,
                     CalculateWinRate(matchCount, winCount),

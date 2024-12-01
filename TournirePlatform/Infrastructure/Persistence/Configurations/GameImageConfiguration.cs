@@ -12,10 +12,10 @@ public class GameImageConfiguration : IEntityTypeConfiguration<GameImage>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasConversion(x => x.Value, x => new GameImageId(x));
         
-        // Конфігурація властивості для S3Path
+
         builder.Property(x => x.S3Path)
-            .IsRequired()  // Вказуємо, що шлях до зображення є обов'язковим
-            .HasMaxLength(500);  // Можна обмежити довжину шляху
+            .IsRequired()  
+            .HasMaxLength(500); 
         
         builder.Property(x => x.GameId).HasConversion(x => x.Value, x => new GameId(x));
       

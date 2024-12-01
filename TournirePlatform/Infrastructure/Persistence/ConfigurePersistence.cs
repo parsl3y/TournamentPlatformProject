@@ -1,4 +1,5 @@
 
+using Amazon.S3;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Domain.TournamentFormat;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Npgsql;
 
 namespace Infrastructure.Persistence;
@@ -67,5 +69,9 @@ public static class ConfigurePersistence
 
         services.AddScoped<GameImageRepository>();
         services.AddScoped<IGameImageRepository>(provider => provider.GetRequiredService<GameImageRepository>());
+        
+        /*var mockS3Service = new Mock<IAmazonS3>();
+        services.AddSingleton(mockS3Service.Object);*/
+        
     }
 }

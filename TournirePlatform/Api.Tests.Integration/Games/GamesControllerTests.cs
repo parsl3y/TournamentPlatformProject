@@ -26,7 +26,7 @@ public class GamesControllerTests(IntegrationTestWebFactory factory)
             Name: gameName);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Games", request);
+        var response = await Client.PostAsJsonAsync("Games/CreateGame", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -50,7 +50,7 @@ public class GamesControllerTests(IntegrationTestWebFactory factory)
             Name: newGameName);
 
         // Act
-        var response = await Client.PutAsJsonAsync("Games", request);
+        var response = await Client.PutAsJsonAsync("Games/UpdateGame", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -74,7 +74,7 @@ public class GamesControllerTests(IntegrationTestWebFactory factory)
             Name: _mainGame.Name);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Games", request);
+        var response = await Client.PostAsJsonAsync("Games/CreateGame", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -90,7 +90,7 @@ public class GamesControllerTests(IntegrationTestWebFactory factory)
             Name: "New Game Name");
 
         // Act
-        var response = await Client.PutAsJsonAsync("Games", request);
+        var response = await Client.PutAsJsonAsync("Games/UpdateGame", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();

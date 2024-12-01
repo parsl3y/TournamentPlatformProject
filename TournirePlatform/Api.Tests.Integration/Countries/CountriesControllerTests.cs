@@ -25,7 +25,7 @@ public class CountriesControllerTests(IntegrationTestWebFactory factory)
             Name: countryName);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Country", request);
+        var response = await Client.PostAsJsonAsync("Country/CreateCountry", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -39,6 +39,7 @@ public class CountriesControllerTests(IntegrationTestWebFactory factory)
         countryFromDataBase!.Name.Should().Be(countryName);
     }
 
+    
     [Fact]
     public async Task ShouldUpdatCountry()
     {
@@ -49,7 +50,7 @@ public class CountriesControllerTests(IntegrationTestWebFactory factory)
             Name: newCountryName);
 
         // Act
-        var response = await Client.PutAsJsonAsync("Country", request);
+        var response = await Client.PutAsJsonAsync("Country/UpdateCountry", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -73,7 +74,7 @@ public class CountriesControllerTests(IntegrationTestWebFactory factory)
             Name: _mainCountry.Name);
 
         // Act
-        var response = await Client.PostAsJsonAsync("Country", request);
+        var response = await Client.PostAsJsonAsync("Country/CreateCountry", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -89,7 +90,7 @@ public class CountriesControllerTests(IntegrationTestWebFactory factory)
             Name: "New Country Name");
 
         // Act
-        var response = await Client.PutAsJsonAsync("Country", request);
+        var response = await Client.PutAsJsonAsync("Country/UpdateCountry", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();

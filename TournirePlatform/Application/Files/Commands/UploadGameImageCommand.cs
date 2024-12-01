@@ -12,58 +12,65 @@ using Microsoft.Extensions.Configuration;
 
 namespace Application.Files.Commands;
 
-public class UploadGameImageCommand : IRequest<Result<string, UploadGameImageException>>
+public class UploadGameImageCommand : IRequest<Result<string, UploadImageException>>
 {
     public required Guid GameId { get; init; }
     public required IFormFile File { get; init; }
 }
 
- public class UploadSneakerImageCommandHandler : IRequestHandler<UploadGameImageCommand, Result<string, UploadGameImageException>>
+ public class UploadGameImageCommandHandler : IRequestHandler<UploadGameImageCommand, Result<string, UploadImageException>>
     {
         private readonly IAmazonS3 _client;
-        private readonly IGameRepositories _gameRepository;
         private readonly IGameQueries _gameQueries;
         private readonly IGameImageRepository _gameImageRepository;
         private readonly string _bucketName;
 
-        public UploadSneakerImageCommandHandler(IAmazonS3 client, IConfiguration config , IGameQueries gameQueries, IGameRepositories gameRepositories, IGameImageRepository gameImageRepository)
+        public UploadGameImageCommandHandler(IAmazonS3 client, IConfiguration config , IGameQueries gameQueries, IGameRepositories gameRepositories, IGameImageRepository gameImageRepository)
         {
             _client = client;
             _bucketName = config["AWS:BucketName"];
-            _gameRepository = gameRepositories;
             _gameQueries = gameQueries;
             _gameImageRepository = gameImageRepository;
         }
 
-         public async Task<Result<string, UploadGameImageException>> Handle(UploadGameImageCommand request, CancellationToken cancellationToken)
-    {
-        var gameOption = await _gameQueries.GetById(new GameId(request.GameId), cancellationToken);
+        public async Task<Result<string, UploadImageException>> Handle(UploadGameImageCommand request, CancellationToken cancellationToken)
+        {
+            var gameId = new GameId(request.GameId);
 
-        return await gameOption.Match(
-            async game =>
+            var doesImageExist = await _gameImageRepository.ExistsByGameId(gameId, cancellationToken);
+            if (doesImageExist)
             {
-                var fileExtension = Path.GetExtension(request.File.FileName).ToLower();
-                var fileKey = $"post_images/{Guid.NewGuid()}{fileExtension}";
+                return new AlreadyHaveAImageException(gameId); 
+            }
 
-                using var fileStream = request.File.OpenReadStream();
+            var gameOption = await _gameQueries.GetById(gameId, cancellationToken);
 
-                var uploadResult = await UploadFileAsync(_bucketName, fileStream, request.File.ContentType, fileKey, cancellationToken);
-                if (!uploadResult)
+            return await gameOption.Match(
+                async game =>
                 {
-                    return new FileUploadFailedException();
-                }
+                    var fileExtension = Path.GetExtension(request.File.FileName).ToLower();
+                    var fileKey = $"post_images/{Guid.NewGuid()}{fileExtension}";
 
-                var imageUrl = $"https://{_bucketName}.s3.amazonaws.com/{fileKey}";
+                    using var fileStream = request.File.OpenReadStream();
 
-                var gameImage = GameImage.New(new GameImageId(Guid.NewGuid()), new GameId(request.GameId), imageUrl);
-                await _gameImageRepository.Add(gameImage, cancellationToken);
+                    var uploadResult = await UploadFileAsync(_bucketName, fileStream, request.File.ContentType, fileKey, cancellationToken);
+                    if (!uploadResult)
+                    {
+                        return new FileUploadFailedException();
+                    }
 
-                return imageUrl;
-            },
-            () => Task.FromResult<Result<string, UploadGameImageException>>(
-                new GameNotFoundException(request.GameId))
-        );
-    }
+                    var imageUrl = $"https://{_bucketName}.s3.amazonaws.com/{fileKey}";
+
+                    var gameImage = GameImage.New(new GameImageId(Guid.NewGuid()), gameId, imageUrl);
+                    await _gameImageRepository.Add(gameImage, cancellationToken);
+
+                    return imageUrl;
+                },
+                () => Task.FromResult<Result<string, UploadImageException>>(
+                    new NotFoundException(request.GameId))
+            );
+        }
+
 
     private async Task<bool> UploadFileAsync(string bucketName, Stream fileStream, string contentType, string fileKey, CancellationToken cancellationToken)
     {

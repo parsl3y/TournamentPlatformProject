@@ -2,6 +2,7 @@ using System.Reflection;
 using Domain.Countries;
 using Domain.Faculties;
 using Domain.Game;
+using Domain.Images;
 using Domain.Matches;
 using Domain.Players;
 
@@ -24,6 +25,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Tournament> Tournaments { get; set; }
     public DbSet<Format> Formats { get; set; }
     public DbSet<GameImage> GameImages { get; set; }
+    
+    public DbSet<CountryImage> CountryImages { get; set; }
+    
+    public DbSet<PlayerImage> PlayerImages { get; set; }
+    
+    public DbSet<TeamImage> TeamImages { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
