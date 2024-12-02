@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241127145042_Initial")]
+    [Migration("20241202220313_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -82,6 +82,31 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_games");
 
                     b.ToTable("games", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Images.CountryImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("country_id");
+
+                    b.Property<string>("S3Path")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("s3path");
+
+                    b.HasKey("Id")
+                        .HasName("pk_country_images");
+
+                    b.HasIndex("CountryId")
+                        .HasDatabaseName("ix_country_images_country_id");
+
+                    b.ToTable("country_images", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Matches.MatchGame", b =>
@@ -196,12 +221,12 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("s3path");
 
                     b.HasKey("Id")
-                        .HasName("pk_player_image");
+                        .HasName("pk_player_images");
 
                     b.HasIndex("PlayerId")
-                        .HasDatabaseName("ix_player_image_player_id");
+                        .HasDatabaseName("ix_player_images_player_id");
 
-                    b.ToTable("player_image", (string)null);
+                    b.ToTable("player_images", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Teams.Team", b =>
@@ -254,12 +279,12 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("team_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_team_image");
+                        .HasName("pk_team_images");
 
                     b.HasIndex("TeamId")
-                        .HasDatabaseName("ix_team_image_team_id");
+                        .HasDatabaseName("ix_team_images_team_id");
 
-                    b.ToTable("team_image", (string)null);
+                    b.ToTable("team_images", (string)null);
                 });
 
             modelBuilder.Entity("Domain.TeamsMatchs.TeamMatch", b =>
@@ -370,6 +395,18 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_game_images_games_id");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Domain.Images.CountryImage", b =>
+                {
+                    b.HasOne("Domain.Countries.Country", "Country")
+                        .WithMany("Images")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_country_images_countries_id");
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Domain.Matches.MatchGame", b =>
@@ -495,6 +532,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("FormatTournament");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Domain.Countries.Country", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Domain.Game.Game", b =>

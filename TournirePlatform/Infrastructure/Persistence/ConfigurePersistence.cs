@@ -69,9 +69,18 @@ public static class ConfigurePersistence
 
         services.AddScoped<GameImageRepository>();
         services.AddScoped<IGameImageRepository>(provider => provider.GetRequiredService<GameImageRepository>());
+
+        services.AddScoped<PlayerImageRepository>();
+        services.AddScoped<IPlayerImageRepository>(provider => provider.GetRequiredService<PlayerImageRepository>());
         
+        services.AddScoped<TeamImageRepository>();
+        services.AddScoped<ITeamImageRepository>(provider => provider.GetRequiredService<TeamImageRepository>());
+        
+        services.AddScoped<CountryImageRepository>();
+        services.AddScoped<ICountryImageRepository>(provider => provider.GetRequiredService<CountryImageRepository>());
+
         /*var mockS3Service = new Mock<IAmazonS3>();
         services.AddSingleton(mockS3Service.Object);*/
-        
+
     }
 }

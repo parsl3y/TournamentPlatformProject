@@ -1,0 +1,16 @@
+.Toastify__toast--error {
+    background-color: rgb(223, 32, 32); 
+    color: white;
+    font-weight: bold;
+  }
+  
+  .Toastify__toast--success {
+    background-color: rgb(18, 225, 76); 
+    color: white;
+    font-weight: bold;
+  }
+  
+  .Toastify__toast-container {
+    top: 20px;
+  }
+  

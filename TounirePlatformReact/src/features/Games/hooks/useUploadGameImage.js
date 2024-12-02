@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { uploadGameImage } from '../features/Games/Services/gameService';
+import { uploadGameImage } from '../Services/gameService';
+import { toast } from 'react-toastify';
 
 export const useUploadGameImage = () => {
   const [gameImages, setGameImages] = useState({});
@@ -9,7 +10,7 @@ export const useUploadGameImage = () => {
       await uploadGameImage(file, gameId);
       setGameImages((prev) => ({ ...prev, [gameId]: file }));
     } catch (error) {
-      alert('Error uploading file: ' + error.message);
+      toast.error('Error uploading file: ' + error.message);
     }
   };
 

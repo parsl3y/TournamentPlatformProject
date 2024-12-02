@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Configurations
                 .HasConversion(x => x.Value, x => new CountryId(x));
 
             builder.HasOne(x => x.Country) 
-                .WithMany()  
+                .WithMany(c => c.Images)  
                 .HasForeignKey(x => x.CountryId)  
                 .HasConstraintName("fk_country_images_countries_id")  
                 .OnDelete(DeleteBehavior.Cascade);  

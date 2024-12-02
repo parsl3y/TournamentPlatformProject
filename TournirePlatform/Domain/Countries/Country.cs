@@ -1,3 +1,5 @@
+using Domain.Images;
+
 namespace Domain.Countries;
 
 public class Country
@@ -5,7 +7,7 @@ public class Country
     public CountryId Id { get; }
 
     public string Name { get; private set; }
-
+    public ICollection<CountryImage>? Images { get; }
     public Country(CountryId id, string name)
     {
         Id = id;

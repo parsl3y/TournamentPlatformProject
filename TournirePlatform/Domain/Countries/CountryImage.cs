@@ -7,7 +7,7 @@ public class CountryImage
     public CountryImageId Id { get; }
 
     public CountryId CountryId { get; }
-    public CountryImage? Country { get; }
+    public Country? Country { get; }
 
     public string S3Path { get; private set; }
 

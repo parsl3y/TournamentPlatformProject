@@ -64,6 +64,25 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "country_images",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    country_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    s3path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_country_images", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_country_images_countries_id",
+                        column: x => x.country_id,
+                        principalTable: "countries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "game_images",
                 columns: table => new
                 {
@@ -153,7 +172,7 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "team_image",
+                name: "team_images",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -162,7 +181,7 @@ namespace Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_team_image", x => x.id);
+                    table.PrimaryKey("pk_team_images", x => x.id);
                     table.ForeignKey(
                         name: "fk_game_images_games_id",
                         column: x => x.team_id,
@@ -202,7 +221,7 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "player_image",
+                name: "player_images",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -211,7 +230,7 @@ namespace Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_player_image", x => x.id);
+                    table.PrimaryKey("pk_player_images", x => x.id);
                     table.ForeignKey(
                         name: "fk_game_images_games_id",
                         column: x => x.player_id,
@@ -248,6 +267,11 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_country_images_country_id",
+                table: "country_images",
+                column: "country_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_game_images_game_id",
                 table: "game_images",
                 column: "game_id");
@@ -263,8 +287,8 @@ namespace Infrastructure.Persistence.Migrations
                 column: "tournament_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_player_image_player_id",
-                table: "player_image",
+                name: "ix_player_images_player_id",
+                table: "player_images",
                 column: "player_id");
 
             migrationBuilder.CreateIndex(
@@ -283,8 +307,8 @@ namespace Infrastructure.Persistence.Migrations
                 column: "team_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_team_image_team_id",
-                table: "team_image",
+                name: "ix_team_images_team_id",
+                table: "team_images",
                 column: "team_id");
 
             migrationBuilder.CreateIndex(
@@ -317,13 +341,16 @@ namespace Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "country_images");
+
+            migrationBuilder.DropTable(
                 name: "game_images");
 
             migrationBuilder.DropTable(
-                name: "player_image");
+                name: "player_images");
 
             migrationBuilder.DropTable(
-                name: "team_image");
+                name: "team_images");
 
             migrationBuilder.DropTable(
                 name: "team_matches");

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { updateGame } from '../features/Games/Services/gameService'; 
+import { updateGame } from '../Services/gameService';
+import { toast } from 'react-toastify';
 
 export const useUpdateGame = () => {
   const [editedGameName, setEditedGameName] = useState('');
@@ -7,7 +8,7 @@ export const useUpdateGame = () => {
 
   const handleUpdateGame = async (gameId, updatedGameName, games, setGames) => {
     if (!updatedGameName.trim()) {
-      alert('Please provide a game name.');
+      toast.error('Please provide a game name.');
       return;
     }
 
@@ -16,10 +17,13 @@ export const useUpdateGame = () => {
 
       setGames(games.map(game => game.id === gameId ? { ...game, name: updatedGame.name } : game));
 
-      alert('Game updated successfully!');
+      setIsEditing(null);
+      setEditedGameName('');
+
+      toast.success('Game updated successfully!');
     } catch (error) {
       console.error('Error updating game:', error.message);
-      alert('Error updating game: ' + error.message);
+      toast.error('Error updating game: ' + error.message);
     }
   };
 

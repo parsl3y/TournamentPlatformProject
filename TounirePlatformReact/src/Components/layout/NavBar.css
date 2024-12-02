@@ -63,3 +63,33 @@
 .iconButton:hover {
     text-decoration: underline;
 }
+
+.navButton {
+    position: relative;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 200px;
+}
+
+.dropdownItem {
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+/* Зміна кольору при наведенні */
+.dropdownItem:hover {
+    text-decoration: underline;
+
+}

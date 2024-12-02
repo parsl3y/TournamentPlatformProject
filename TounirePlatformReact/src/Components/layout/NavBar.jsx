@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useUserRole } from '../../hooks/useUserRole'; 
 import './NavBar.css';
 
 const NavBar = ({ onLogout }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isGamesMenuOpen, setIsGamesMenuOpen] = useState(false);
+
+    const userRole = useUserRole();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -33,7 +37,24 @@ const NavBar = ({ onLogout }) => {
                     <button className="navButton">Турніри</button>
                     <button className="navButton">Команди</button>
                     <button className="navButton">Гравці</button>
-                    <button className="navButton" onClick={() => window.location.href = "/games"}>Ігри</button>
+
+                    {userRole === 'admin' && (
+                        <div 
+                            className="navButton" 
+                            onClick={() => setIsGamesMenuOpen(!isGamesMenuOpen)} 
+                            onMouseLeave={() => setIsGamesMenuOpen(false)} 
+                        >
+                            <span>Наповнення</span>
+                            {isGamesMenuOpen && (
+                                <div className="dropdownMenu">
+                                    <button className="dropdownItem" onClick={() => window.location.href = "/games"}>Ігри</button>
+                                    <button className="dropdownItem" onClick={() => window.location.href = "/countries"}>Країни</button>
+                                    <button className="dropdownItem" onClick={() => window.location.href = "/teams"}>Команда</button>
+                                    <button className="dropdownItem" onClick={() => window.location.href = "/players"}>Гравець</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </nav>
                 <div className="userActions">
                     <button className="iconButton" onClick={() => window.location.href = "/profile"}>👤</button>
