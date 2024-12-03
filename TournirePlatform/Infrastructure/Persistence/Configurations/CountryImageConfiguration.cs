@@ -21,7 +21,7 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.CountryId)
                 .HasConversion(x => x.Value, x => new CountryId(x));
-
+ 
             builder.HasOne(x => x.Country) 
                 .WithMany(c => c.Images)  
                 .HasForeignKey(x => x.CountryId)  

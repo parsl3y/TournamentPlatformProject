@@ -6,6 +6,7 @@ export const useLogout = () => {
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");  
     navigate("/auth");  
+    window.location.reload();
   };
 
   return { handleLogout };

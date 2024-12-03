@@ -1,5 +1,4 @@
 import React from "react";
-import NavBar from "../../../Components/layout/NavBar";
 import UserProfile from "./UserProfile";
 import './UserProfilePage.css';
 import { useLogout } from '../../../hooks/useLogOut'; 
@@ -11,7 +10,6 @@ const UserProfilePage = () => {
 
     return (
         <div className="userProfilePage">
-            <NavBar onLogout={handleLogout} />
             <h1 className="H1">Профіль Користувача</h1>
             <main className="mainContent">
                 {user ? (

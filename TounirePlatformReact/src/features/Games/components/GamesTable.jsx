@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUploadGameImage } from '../hooks/useUploadGameImage'; 
 import { useUpdateGame } from '../hooks/useUpdateGame'; 
 import DeleteGame from './DeleteGame';  
-import PageTitle from './PageTitle';
+import PageTitle from '../../../components/layouts/PageTitle';
 import '../GameList.css';
 
 const GamesTable = ({ games, setGames }) => {
@@ -84,11 +84,11 @@ const GamesTable = ({ games, setGames }) => {
                     <div>
                       <button 
                         onClick={() => handleUpdateGame(game.id, editedGameName, games, setGames)} 
-                        className="update-button"
+                        className="saveBtn"
                       >
                         Save
                       </button>
-                      <button onClick={cancelEditing} className="update-button">
+                      <button onClick={cancelEditing} className="cancelBtn">
                         Cancel
                       </button>
                     </div>
