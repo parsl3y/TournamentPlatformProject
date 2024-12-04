@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ element }) => {
+export const ProtectedRoute = ({ element }) => {
   const isAuthenticated = localStorage.getItem('loggedInUser'); 
 
   if (!isAuthenticated) {
@@ -11,4 +11,12 @@ const ProtectedRoute = ({ element }) => {
   return element; 
 };
 
-export default ProtectedRoute;
+export const ProtectedRouteIsLogin = ({ element }) => {
+  const isAuthenticated = localStorage.getItem('loggedInUser'); 
+
+  if (isAuthenticated) {
+    return <Navigate to="/profile" />;
+  }
+
+  return element; 
+};

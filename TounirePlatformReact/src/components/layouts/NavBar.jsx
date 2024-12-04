@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useUserRole } from '../../hooks/useUserRole'; 
+import { useLogout } from '../../hooks/useLogOut'; 
 import './NavBar.css';
 
-const NavBar = ({ onLogout }) => {
+const NavBar = () => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isGamesMenuOpen, setIsGamesMenuOpen] = useState(false);
 
     const userRole = useUserRole();
+    const { handleLogout } = useLogout();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -58,7 +60,7 @@ const NavBar = ({ onLogout }) => {
                 </nav>
                 <div className="userActions">
                     <button className="iconButton" onClick={() => window.location.href = "/profile"}>👤</button>
-                    <button className="iconButton" onClick={onLogout}>🚪</button>
+                    <button className="iconButton" onClick={handleLogout}>🚪</button>
                 </div>
             </header>
             <div className="bodyContent">
