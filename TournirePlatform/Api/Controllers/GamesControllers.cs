@@ -23,7 +23,6 @@ public class GamesControllers(ISender sender, IGameQueries gameQueries) : Contro
         return Ok(result);
     }
 
-
     
     [HttpPost("CreateGame")]
     public async Task<ActionResult<GameDto>> Create(

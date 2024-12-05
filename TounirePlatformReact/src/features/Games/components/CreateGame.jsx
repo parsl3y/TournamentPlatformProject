@@ -4,27 +4,15 @@ import { toast } from 'react-toastify';
 
 const CreateGameComponent = ({ games, setGames }) => {
   const [newGameName, setNewGameName] = useState(''); 
-  const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateGame = async () => {
-    if (!newGameName.trim()) {
-      toast.error('Game name cannot be empty.');
-      return;
-    }
-
     try {
-      setIsCreating(true);
-      const newGame = await createGame(newGameName.trim());
-
-      setGames((prevGames) => [...prevGames, newGame]);
-
+      const newGame = await createGame(newGameName);
+      setGames([...games, newGame]);
       toast.success('Game created successfully!');
-      setNewGameName('');
+      setNewGameName(''); 
     } catch (error) {
-      console.error('Error creating game:', error);
       toast.error('Error creating game: ' + error.message);
-    } finally {
-      setIsCreating(false);
     }
   };
 
@@ -37,10 +25,9 @@ const CreateGameComponent = ({ games, setGames }) => {
         onChange={(e) => setNewGameName(e.target.value)} 
         placeholder="Enter game name"
         className="inputField"
-        disabled={isCreating}
       />
-      <button onClick={handleCreateGame} className="button" disabled={isCreating}>
-        {isCreating ? 'Creating...' : 'Create Game'}
+      <button onClick={handleCreateGame} className="button">
+        Create Game
       </button>
     </div>
   );

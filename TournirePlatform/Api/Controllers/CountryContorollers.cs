@@ -16,10 +16,11 @@ namespace Api.Controllers;
 [ApiController]
 public class CountryControllers(ISender sender, ICountryQueries countryQueries) : ControllerBase
 {
+    [Route("CountriesList")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CountryDto>>> GetAllGames(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<CountryDto>>> GetAllCreate(CancellationToken cancellationToken, int pageNumber = 1, int pageSize = 5)
     {
-        var entities = await countryQueries.GetAll(cancellationToken);
+        var entities = await countryQueries.GetAll(pageNumber, pageSize, cancellationToken);
         return entities.Select(CountryDto.FromDomainModel).ToList();
     }
     
@@ -32,6 +33,7 @@ public class CountryControllers(ISender sender, ICountryQueries countryQueries) 
         {
             Name = request.Name
         };
+        
 
         var result = await sender.Send(input, cancellationToken);
 

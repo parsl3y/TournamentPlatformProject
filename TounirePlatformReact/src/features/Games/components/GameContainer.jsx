@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import CreateGame from './CreateGame';
-import GamesTable from './GamesTable'; 
-import Loading from '../../../components/layouts/Loading'; 
-import { fetchGames } from '../Services/gameService'; 
-import 'react-toastify/dist/ReactToastify.css'; 
-import { FaTimes } from 'react-icons/fa'; 
+import GamesTable from './GamesTable';
+import Loading from '../../../components/layouts/Loading';
+import { fetchGames } from '../Services/gameService';
+import 'react-toastify/dist/ReactToastify.css';
+import { FaTimes } from 'react-icons/fa';
 
 const GameContainer = () => {
   const [games, setGames] = useState([]);
@@ -13,14 +13,20 @@ const GameContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [hasMoreGames, setHasMoreGames] = useState(true);
 
   useEffect(() => {
     const loadGames = async () => {
       try {
-        const gamesData = await fetchGames(currentPage); // Завантажуємо ігри для поточної сторінки
-        setGames(gamesData);
-        // Тут можна також оновити загальну кількість сторінок, якщо є така інформація
-        // setTotalPages(totalPageCount); 
+        const gamesData = await fetchGames(currentPage);
+        if (gamesData.length > 0) {
+          setGames(gamesData);
+          setHasMoreGames(gamesData.length === 5); // Якщо елементів менше 5, наступна сторінка недоступна
+        } else {
+          setHasMoreGames(false);
+        }
+
+        setTotalPages(Math.ceil(gamesData.totalCount / 5));
       } catch (error) {
         setError(error.message);
         console.error('Error loading games:', error.message);
@@ -30,7 +36,7 @@ const GameContainer = () => {
     };
 
     loadGames();
-  }, [currentPage]); // Завантажуємо нову сторінку при зміні currentPage
+  }, [currentPage]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -41,11 +47,24 @@ const GameContainer = () => {
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (hasMoreGames) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1)); // Забезпечуємо мінімальну сторінку = 1
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const moveLastGameToNextPage = (newGames) => {
+    const newGameList = [...newGames];
+    if (newGameList.length > 5) {
+      const lastGame = newGameList.pop();
+      setGames(newGameList);
+      setCurrentPage((prevPage) => prevPage + 1);
+    } else {
+      setGames(newGameList);
+    }
   };
 
   return (
@@ -60,7 +79,7 @@ const GameContainer = () => {
             <button className="close-button" onClick={handleCloseModal}>
               <FaTimes size={20} />
             </button>
-            <CreateGame games={games} setGames={setGames} />
+            <CreateGame games={games} setGames={setGames} moveLastGameToNextPage={moveLastGameToNextPage} />
           </div>
         </div>
       )}
@@ -73,11 +92,14 @@ const GameContainer = () => {
         <GamesTable games={games} setGames={setGames} />
       )}
 
-      {/* Навігація по сторінках */}
       <div className="pagination">
-        <button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
         <span>Page {currentPage}</span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+        <button onClick={handleNextPage} disabled={!hasMoreGames}>
+          Next
+        </button>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class CountryRepository(ApplicationDbContext context) : ICountryRepositories, ICountryQueries
 {
-    public async Task<IReadOnlyList<Country>> GetAll(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Country>> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         return await context.Countries
             .AsNoTracking()

@@ -13,8 +13,8 @@ public class GameRepository(ApplicationDbContext context) : IGameRepositories, I
     {
         return await context.Games
             .AsNoTracking()
-            .Skip((pageNumber - 1) * pageSize) // Пропускаємо записи до поточної сторінки
-            .Take(pageSize) // Беремо лише кількість записів, відповідну розміру сторінки
+            .Skip((pageNumber - 1) * pageSize) 
+            .Take(pageSize) 
             .ToListAsync(cancellationToken);
     }
 

@@ -7,7 +7,7 @@ namespace Application.Common.Interfaces.Queries;
 
 public interface ICountryQueries
 {
-    Task<IReadOnlyList<Country>> GetAll(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Country>> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<Option<Country>> GetById(CountryId id, CancellationToken cancellationToken);
 
 }
