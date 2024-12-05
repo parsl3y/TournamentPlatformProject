@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { createGame } from '../Services/gameService'; 
-import { toast } from 'react-toastify'; 
+import { createGame } from '../Services/gameService';
+import { toast } from 'react-toastify';
 
-const CreateGameComponent = ({ games, setGames }) => {
-  const [newGameName, setNewGameName] = useState(''); 
+const CreateGameComponent = ({ games, setGames, moveLastGameToNextPage }) => {
+  const [newGameName, setNewGameName] = useState('');
 
   const handleCreateGame = async () => {
     try {
       const newGame = await createGame(newGameName);
-      setGames([...games, newGame]);
+      const updatedGames = [...games, newGame]; // додайте нову гру в список
+      moveLastGameToNextPage(updatedGames); // Перемістіть на останню сторінку
       toast.success('Game created successfully!');
-      setNewGameName(''); 
+      setNewGameName('');
     } catch (error) {
       toast.error('Error creating game: ' + error.message);
     }
@@ -22,7 +23,7 @@ const CreateGameComponent = ({ games, setGames }) => {
       <input
         type="text"
         value={newGameName}
-        onChange={(e) => setNewGameName(e.target.value)} 
+        onChange={(e) => setNewGameName(e.target.value)}
         placeholder="Enter game name"
         className="inputField"
       />

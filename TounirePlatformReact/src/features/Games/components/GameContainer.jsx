@@ -12,7 +12,7 @@ const GameContainer = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);  // Оновлено тут
   const [hasMoreGames, setHasMoreGames] = useState(true);
 
   useEffect(() => {
@@ -21,11 +21,12 @@ const GameContainer = () => {
         const gamesData = await fetchGames(currentPage);
         if (gamesData.length > 0) {
           setGames(gamesData);
-          setHasMoreGames(gamesData.length === 5); // Якщо елементів менше 5, наступна сторінка недоступна
+          setHasMoreGames(gamesData.length === 5); // якщо є більше 5 ігор
         } else {
           setHasMoreGames(false);
         }
 
+        // Оновлюємо totalPages
         setTotalPages(Math.ceil(gamesData.totalCount / 5));
       } catch (error) {
         setError(error.message);
@@ -79,7 +80,11 @@ const GameContainer = () => {
             <button className="close-button" onClick={handleCloseModal}>
               <FaTimes size={20} />
             </button>
-            <CreateGame games={games} setGames={setGames} moveLastGameToNextPage={moveLastGameToNextPage} />
+            <CreateGame
+              games={games}
+              setGames={setGames}
+              moveLastGameToNextPage={moveLastGameToNextPage}
+            />
           </div>
         </div>
       )}
