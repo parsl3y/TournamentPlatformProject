@@ -13,7 +13,6 @@ public class Team
     public int WinCount { get; set; }
     public double WinRate { get; set; }  
     public DateTime CreationDate { get; init; }
-    
     public List<Player> PlayerTeams { get; private set; } = new List<Player>();
     public ICollection<TeamMatch> TeamMatches { get; private set; } = [];
 

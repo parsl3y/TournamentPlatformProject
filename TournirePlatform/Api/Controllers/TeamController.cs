@@ -32,7 +32,7 @@ public class TeamController(ISender sender, ITeamQuery teamQuery) : ControllerBa
             Name = request.Name,
             MatchCount = request.MatchCount,
             WinCount = request.WinCount,
-            CreationDate = DateTime.UtcNow.Date
+            CreationDate  = DateTime.UtcNow,
         };
         
         var result = await sender.Send(input, cancellationToken);
@@ -43,20 +43,19 @@ public class TeamController(ISender sender, ITeamQuery teamQuery) : ControllerBa
     }
 
     [HttpPut("UpdateTeam")]
-    public async Task<ActionResult<TeamDto>> Update([FromBody] TeamDto request, CancellationToken cancellationToken)
+    public async Task<ActionResult<TeamDtoUpdate>> Update([FromBody] TeamDtoUpdate request, CancellationToken cancellationToken)
     {
         var input = new UpdateTeamCommand
         {
             TeamId = request.Id!,
             Name = request.Name,
             MatchCount = request.MatchCount,
-            WinCount = request.WinCount,
-            WinRate = request.WinRate,
+            WinCount = request.WinCount
         };
         
         var result = await sender.Send(input, cancellationToken);
-        return result.Match<ActionResult<TeamDto>>(
-            t => TeamDto.FromDomainModel(t),
+        return result.Match<ActionResult<TeamDtoUpdate>>(
+            t => TeamDtoUpdate.FromDomainModel(t),
             e => e.ToObjectResult());
     }
 

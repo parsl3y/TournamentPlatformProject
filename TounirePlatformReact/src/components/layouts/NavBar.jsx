@@ -37,7 +37,7 @@ const NavBar = () => {
                 <nav className="nav">
                     <button className="navButton">Матчі</button>
                     <button className="navButton">Турніри</button>
-                    <button className="navButton">Команди</button>
+                    <button className="navButton" onClick={() => window.location.href = "/teams"}>Команди</button>
                     <button className="navButton">Гравці</button>
 
                     {userRole === 'admin' && (

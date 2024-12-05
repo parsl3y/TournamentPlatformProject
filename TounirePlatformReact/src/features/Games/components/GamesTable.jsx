@@ -24,7 +24,7 @@ const GamesTable = ({ games, setGames }) => {
         </tbody>
       </table>
     </div>
-  );
+  );d
 };
 
 export default GamesTable;

@@ -13,7 +13,6 @@ public class UpdateTeamCommand : IRequest<Result<Team, TeamException>>
     public required string Name { get; set; }
     public required int MatchCount { get; set; }
     public required int WinCount { get; set; }
-    public required double WinRate { get; set; }
 }
 
 public class UpdateTeamCommanHandler(ITeamRepository _teamRepository, ITeamQuery _teamQuery) : IRequestHandler<UpdateTeamCommand, Result<Team,TeamException>>
@@ -26,7 +25,7 @@ public class UpdateTeamCommanHandler(ITeamRepository _teamRepository, ITeamQuery
         var existingTeam = await _teamQuery.GetById(teamId, cancellationToken);
 
         return await existingTeam.Match(
-            async t => await UpdateEntity(t, request.Name, request.MatchCount, request.WinCount, request.WinRate,
+            async t => await UpdateEntity(t, request.Name, request.MatchCount, request.WinCount,
                 cancellationToken),
             () => Task.FromResult <Result<Team,TeamException>> (new TeamNotFoundException(teamId)));
     }
@@ -35,7 +34,6 @@ public class UpdateTeamCommanHandler(ITeamRepository _teamRepository, ITeamQuery
         string name,
         int matchCount,
         int winCount, 
-        double winRate,
         CancellationToken cancellationToken)
     {
         try

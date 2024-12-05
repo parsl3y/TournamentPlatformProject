@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import CreateGameComponent from './CreateGameComponent';
+import CreateGame from './CreateGame';
 import GamesTable from './GamesTable'; 
 import Loading from '../../../components/layouts/Loading'; 
 import { fetchGames } from '../Services/gameService'; 
 import 'react-toastify/dist/ReactToastify.css'; 
+import { FaTimes } from 'react-icons/fa'; 
 
-const GamesList = () => {
-  
+const GameContainer = () => {
   const [games, setGames] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); 
@@ -39,16 +39,16 @@ const GamesList = () => {
   return (
     <div className="games-container">
       <button onClick={handleOpenModal} className="add-game-button">
-        Add Games
+        Add Game
       </button>
 
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-button" onClick={handleCloseModal}>
-              ×
+              <FaTimes size={20} />
             </button>
-            <CreateGameComponent games={games} setGames={setGames} />
+            <CreateGame games={games} setGames={setGames} />
           </div>
         </div>
       )}
@@ -56,7 +56,7 @@ const GamesList = () => {
       {loading ? (
         <Loading /> 
       ) : error ? (
-        <div>Error: {error}</div>
+        <div className="error-message">Error: {error}</div>
       ) : (
         <GamesTable games={games} setGames={setGames} />
       )}
@@ -64,4 +64,4 @@ const GamesList = () => {
   );
 };
 
-export default GamesList;
+export default GameContainer;

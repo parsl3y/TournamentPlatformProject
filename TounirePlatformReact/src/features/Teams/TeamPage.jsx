@@ -1,16 +1,16 @@
 import React from 'react';
-import GameContainer from './components/GameContainer';  
 import 'react-toastify/dist/ReactToastify.css';
 import '../../Toast.css'; 
+import TeamContainer from './components/TeamsContainer';
 
-const GamePage = () => {
+const TeamPage = () => {
   return (
     <>
     
-      <GameContainer />  
+    <TeamContainer />
       
     </>
   );
 };
 
-export default GamePage;
+export default TeamPage;

@@ -31,7 +31,8 @@ public record TeamDtoCreate(
         Guid Id,
         string Name,
         int MatchCount,
-        int WinCount
+        int WinCount,
+        DateTime CreateionDate
     )
     {
         public static TeamDtoCreate FromDomainModel(Team team)
@@ -40,7 +41,26 @@ public record TeamDtoCreate(
                 Id: team.Id.Value,
                 Name: team.Name,
                 MatchCount: team.MatchCount,
-                WinCount: team.WinCount
+                WinCount: team.WinCount,
+                CreateionDate: team.CreationDate
             );
         }
     }
+
+public record TeamDtoUpdate(
+    Guid Id,
+    string Name,
+    int MatchCount,
+    int WinCount
+)
+{
+    public static TeamDtoUpdate FromDomainModel(Team team)
+    {
+        return new TeamDtoUpdate(
+            Id: team.Id.Value,
+            Name: team.Name,
+            MatchCount: team.MatchCount,
+            WinCount: team.WinCount
+        );
+    }
+}
