@@ -7,6 +7,7 @@ using Application.Files.Commands;
 using Application.Files.Exceptions;
 using Domain.Countries;
 using Domain.Faculties;
+using Domain.Images;
 using Domain.Teams;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -20,6 +21,7 @@ namespace Api.Controllers
         private readonly ISender _sender;
         private readonly IGameImageRepository _gameImageRepository;
         private readonly ITeamImageRepository _teamImageRepository;
+        private readonly ICountryImageRepository _countryImageRepository;
         
         public UploadController(ISender sender, IGameImageRepository gameImageRepository)
         {
@@ -102,5 +104,43 @@ namespace Api.Controllers
             }
             return Ok(images);
         }
+
+        [HttpPost("uploadCountry")]
+        public async Task<ActionResult> UploadCountry([FromForm] IFormFile file, [FromForm] Guid countryId,
+            CancellationToken cancellationToken)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var command = new UploadCountryImageCommand()
+            {
+                CountryId = countryId,
+                File = file
+            };
+
+            var result = await _sender.Send(command, cancellationToken);
+
+            return result.Match<ActionResult>(
+                imageUrl => Ok(new { Message = "File uploaded successfully", ImageUrl = imageUrl }),
+                e => e switch
+                {
+                    NotFoundException => NotFound(e.Message),
+                    FileUploadFailedException => StatusCode(500, e.Message),
+                    _ => StatusCode(500, "An unexpected error occurred.")
+                }
+            );
+        }
+        
+        [HttpGet("CountryGet/{countryId:guid}")]
+        public async Task<ActionResult<IEnumerable<CountryImage>>> GetByCountryId(Guid countryId, CancellationToken cancellationToken)
+        {
+            var images = await _countryImageRepository.GetByCountryId(new CountryId(countryId), cancellationToken);
+            if (!images.Any())
+            {
+                return NotFound("No images found for this sneaker.");
+            }
+            return Ok(images);
+        }
+        
     }
 }

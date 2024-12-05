@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "../features/Authenticator/AuthPage";
 import Profile from "../features/Authenticator/UserProfile/UserProfilePage";
 import GamePage from "../features/Games/GamePage";
+import CountryPage from "../features/Countries/CountryPage";
 import { ProtectedRoute, ProtectedRouteIsLogin } from "./ProtectedRoute";
 import Layout from "../components/layouts/Layout";
 import TeamPage from "../features/Teams/TeamPage";
@@ -34,6 +35,11 @@ const AppRouter = () => {
           element={<ProtectedRoute element={<TeamPage />} />} 
         />
       </Route>
+
+      <Route 
+          path="countries" 
+          element={<ProtectedRoute element={<CountryPage/>} />} 
+        />
 
       <Route path="*" element={<Navigate to="/auth" replace />} />
     </Routes>

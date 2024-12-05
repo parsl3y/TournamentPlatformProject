@@ -1,0 +1,205 @@
+.countries-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+  }
+  
+  .create-country-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .inputField {
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #d1d1d6;
+    background-color: #3a3a3c;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    width: 80%; 
+    max-width: 400px;
+  }
+  
+  .button {
+    width: 80%; 
+    max-width: 400px; 
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #006400, #000000);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .button:hover {
+    background: linear-gradient(135deg, #004d00, #000000);
+    transform: translateY(-2px);
+  }
+  
+  .saveBtn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .saveBtn:hover {
+    background-color: darkgreen;
+  }
+  
+  .cancelBtn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancelBtn:hover {
+    background-color: darkred;
+  }
+  
+  .button:active {
+    transform: translateY(1px);
+  }
+  
+  .success-message {
+    color: green;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .countries-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .countries-table th, .countries-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center; 
+    vertical-align: middle;
+  }
+  
+  .view-button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .country-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
+  .view-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+  
+  .delete-button {
+    padding: 8px 16px;
+    background-color: #e53935;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .delete-button:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+  }
+  
+  .delete-button:active {
+    transform: translateY(1px);
+  }
+  
+  .update-button {
+    padding: 8px 16px;
+    background-color: #d48d0a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .update-button:hover {
+    background-color: #c17d00;
+    transform: translateY(-2px);
+  }
+  
+  .update-button:active {
+    transform: translateY(1px);
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #1c1b22;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .add-country-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-country-button:hover {
+    background-color: #0056b3;
+  }
+  
