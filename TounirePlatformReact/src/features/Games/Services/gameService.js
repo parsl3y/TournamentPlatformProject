@@ -3,15 +3,16 @@ import { toast } from 'react-toastify';
 
 const httpClient = new HttpClient({ baseURL: 'http://localhost:5030' });
 
-export const fetchGames = async () => {
+export const fetchGames = async (pageNumber = 1, pageSize = 5) => {
   try {
-    const data = await httpClient.get('/Games/GamesList');
+    const data = await httpClient.get(`/Games/GamesList?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     return data;
   } catch (error) {
-    toast.error('Error fetching games: ' + error.message); 
+    toast.error('Error fetching games: ' + error.message);
     throw new Error('Error fetching games: ' + error.message); 
   }
 };
+
 
 export const createGame = async (newGameName) => {
   try {

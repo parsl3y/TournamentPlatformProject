@@ -59,18 +59,17 @@ export const fetchTeamImages = async (teamId) => {
 };
 
 export const uploadTeamImage = async (file, teamId) => {
+  try {
     const formData = new FormData();
-    formData.append('image', file);
-  
-    const response = await fetch(`/api/teams/${teamId}/upload-image`, {
-      method: 'POST',
-      body: formData,
+    formData.append('file', file);
+    formData.append('teamId', teamId);
+    const response = await httpClient.post('/file/uploadTeam', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
-  
-    if (!response.ok) {
-      throw new Error('Failed to upload image');
-    }
-  
-    return await response.json();
-  };
+    return response;
+  } catch (error) {
+    toast.error('Error uploading file: ' + error.message); 
+    throw new Error('Error uploading file: ' + error.message); 
+  }
+};
   

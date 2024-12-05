@@ -6,7 +6,7 @@ namespace Application.Common.Interfaces.Queries;
 
 public interface IGameQueries
 {
-    Task<IReadOnlyList<Game>> GetAll(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Game>> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<Option<Game>> GetById(GameId id, CancellationToken cancellationToken);
 
 }

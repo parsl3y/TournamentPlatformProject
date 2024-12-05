@@ -9,10 +9,12 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class GameRepository(ApplicationDbContext context) : IGameRepositories, IGameQueries
 {
-    public async Task<IReadOnlyList<Game>> GetAll(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Game>> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         return await context.Games
             .AsNoTracking()
+            .Skip((pageNumber - 1) * pageSize) // Пропускаємо записи до поточної сторінки
+            .Take(pageSize) // Беремо лише кількість записів, відповідну розміру сторінки
             .ToListAsync(cancellationToken);
     }
 

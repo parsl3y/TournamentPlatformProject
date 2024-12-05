@@ -14,9 +14,6 @@ public class UpdateTeamValidator : AbstractValidator<UpdateTeamCommand>
             .NotEmpty()
             .WithMessage("Match count is required.");
 
-        RuleFor(x => x.WinCount)
-            .NotEmpty()
-            .WithMessage("Win count is required.");
 
         RuleFor(x => x.WinCount)
             .LessThanOrEqualTo(x => x.MatchCount)

@@ -15,11 +15,15 @@ public class GamesControllers(ISender sender, IGameQueries gameQueries) : Contro
 {
     [Route("GamesList")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GameDto>>> GetAllGames(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<GameDto>>> GetAllGames(CancellationToken cancellationToken, int pageNumber = 1, int pageSize = 5)
     {
-        var entities = await gameQueries.GetAll(cancellationToken);
-        return entities.Select(GameDto.FromDomainModel).ToList();
+        var entities = await gameQueries.GetAll(pageNumber, pageSize, cancellationToken);
+        var result = entities.Select(GameDto.FromDomainModel).ToList();
+    
+        return Ok(result);
     }
+
+
     
     [HttpPost("CreateGame")]
     public async Task<ActionResult<GameDto>> Create(

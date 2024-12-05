@@ -1,7 +1,7 @@
 import React, { useState, memo } from 'react';
 import DeleteTeam from './DeleteTeam'; 
 import { useUpdateTeam } from '../hooks/useUpdateTeam';
-import { useUploadTeamImage } from '../hooks/useUploadTeamImage';
+import { useUploadTeamImage } from '../hooks/useUploadTeamImage'; 
 
 const TeamRow = ({ team, teams, setTeams }) => {
   const [selectedFile, setSelectedFile] = useState(null);

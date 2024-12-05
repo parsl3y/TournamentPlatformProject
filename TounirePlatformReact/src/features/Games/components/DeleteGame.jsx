@@ -1,5 +1,7 @@
 import React from 'react';
 import { deleteGame } from '../Services/gameService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const DeleteGame = ({ gameId, onDelete }) => {
   const handleDeleteGame = async () => {
@@ -7,8 +9,10 @@ const DeleteGame = ({ gameId, onDelete }) => {
       await deleteGame(gameId);
 
       onDelete((prevGames) => prevGames.filter((game) => game.id !== gameId)); 
+    
+      toast.success('Team deleted successfully!');
     } catch (error) {
-      alert('Error deleting game: ' + error.message);
+      toast.error('Error deleting team: ' + error.message); 
     }
   };
 

@@ -16,7 +16,6 @@ const CreateGameComponent = ({ games, setGames }) => {
       setIsCreating(true);
       const newGame = await createGame(newGameName.trim());
 
-      // Додаємо нову гру до списку
       setGames((prevGames) => [...prevGames, newGame]);
 
       toast.success('Game created successfully!');
