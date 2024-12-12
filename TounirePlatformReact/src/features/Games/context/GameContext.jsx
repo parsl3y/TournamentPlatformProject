@@ -4,9 +4,7 @@ import { toast } from 'react-toastify';
 
 const GameContext = createContext();
 
-export const useGameContext = () => {
-  return useContext(GameContext);
-};
+export const useGameContext = () => useContext(GameContext);
 
 const initialState = {
   games: [],
@@ -28,16 +26,9 @@ const gameReducer = (state, action) => {
         hasMoreGames: action.payload.hasMoreGames,
       };
     case 'FETCH_GAMES_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
+      return { ...state, loading: false, error: action.payload };
     case 'ADD_GAME':
-      return {
-        ...state,
-        games: [...state.games, action.payload],
-      };
+      return { ...state, games: [...state.games, action.payload] };
     case 'UPDATE_GAME':
       return {
         ...state,
@@ -51,105 +42,74 @@ const gameReducer = (state, action) => {
         games: state.games.filter((game) => game.id !== action.payload),
       };
     case 'SET_PAGE':
-      return {
-        ...state,
-        currentPage: action.payload,
-      };
+      return { ...state, currentPage: action.payload };
     case 'TOGGLE_MODAL':
-      return {
-        ...state,
-        isModalOpen: !state.isModalOpen,
-      };
+      return { ...state, isModalOpen: !state.isModalOpen };
     case 'SET_EDITING_GAME':
-      return {
-        ...state,
-        editingGameId: action.payload,
-      };
+      return { ...state, editingGameId: action.payload };
     default:
       return state;
+  }
+};
+
+const fetchGamesData = async (page, dispatch) => {
+  try {
+    const gamesData = await fetchGames(page);
+    dispatch({
+      type: 'FETCH_GAMES_SUCCESS',
+      payload: {
+        games: gamesData,
+        hasMoreGames: gamesData.length === 5,
+      },
+    });
+  } catch (error) {
+    dispatch({ type: 'FETCH_GAMES_FAILURE', payload: error.message });
+    toast.error('Error loading games: ' + error.message);
   }
 };
 
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
-  const fetchAndSetGames = async (page) => {
-    try {
-      const gamesData = await fetchGames(page);
-      dispatch({
-        type: 'FETCH_GAMES_SUCCESS',
-        payload: {
-          games: gamesData,
-          hasMoreGames: gamesData.length === 5,
-        },
-      });
-    } catch (error) {
-      dispatch({ type: 'FETCH_GAMES_FAILURE', payload: error.message });
-      toast.error('Error reloading games: ' + error.message);
-    }
-  };
-  
   useEffect(() => {
-    const loadGames = async () => {
-      try {
-        const gamesData = await fetchGames(state.currentPage);
-        dispatch({
-          type: 'FETCH_GAMES_SUCCESS',
-          payload: {
-            games: gamesData,
-            hasMoreGames: gamesData.length === 5,
-          },
-        });
-      } catch (error) {
-        dispatch({ type: 'FETCH_GAMES_FAILURE', payload: error.message });
-        toast.error('Error loading games: ' + error.message);
-      }
-    };
-
-    loadGames();
+    fetchGamesData(state.currentPage, dispatch);
   }, [state.currentPage]);
+
+  const isGameNameDuplicate = (gameName, gameId = null) => {
+    return state.games.some(
+      (game) => game.name === gameName.trim() && game.id !== gameId
+    );
+  };
 
   const addGame = async (gameName) => {
     if (!gameName.trim()) {
       toast.error('Game name cannot be empty!');
       return;
     }
-  
-    const gameExists = state.games.some((game) => game.name === gameName.trim());
-  
-    if (gameExists) {
+    if (isGameNameDuplicate(gameName)) {
       toast.error('Game with this name already exists!');
       return;
     }
-  
     try {
       await createGame(gameName.trim());
       toast.success('Game added successfully!');
-      
-      await fetchAndSetGames(state.currentPage);
+      await fetchGamesData(state.currentPage, dispatch);
     } catch (error) {
       toast.error('Error adding game: ' + error.message);
     }
   };
-  
 
   const updateGameName = async (gameId, updatedGameName) => {
     if (!updatedGameName.trim()) {
       toast.error('Game name cannot be empty!');
       return;
     }
-  
-    const gameExists = state.games.some(
-      (game) => game.name === updatedGameName.trim() && game.id !== gameId
-    );
-  
-    if (gameExists) {
+
+    if (isGameNameDuplicate(updatedGameName, gameId)) {
       toast.error('Game with this name already exists!');
-      const game = state.games.find((game) => game.id === gameId);
-      dispatch({ type: 'SET_EDITING_GAME_NAME', payload: game.name });
       return;
     }
-  
+
     try {
       const updatedGame = await updateGame(gameId, updatedGameName.trim());
       dispatch({ type: 'UPDATE_GAME', payload: updatedGame });
@@ -157,50 +117,27 @@ export const GameProvider = ({ children }) => {
       toast.success('Game updated successfully!');
     } catch (error) {
       toast.error('Error updating game: ' + error.message);
-      const game = state.games.find((game) => game.id === gameId);
-      dispatch({ type: 'SET_EDITING_GAME_NAME', payload: game.name });
     }
   };
-  
-  
 
   const removeGame = async (gameId) => {
     try {
       await deleteGame(gameId);
       toast.success('Game deleted successfully!');
-  
-      await fetchAndSetGames(state.currentPage);
+      await fetchGamesData(state.currentPage, dispatch);
     } catch (error) {
       toast.error('Error deleting game: ' + error.message);
     }
   };
-  
-  const setPage = (pageNumber) => {
-    dispatch({ type: 'SET_PAGE', payload: pageNumber });
-  };
-
-  const toggleModal = () => {
-    dispatch({ type: 'TOGGLE_MODAL' });
-  };
-
-  const setEditingGame = (gameId) => {
-    dispatch({ type: 'SET_EDITING_GAME', payload: gameId });
-  };
 
   const value = {
-    games: state.games,
-    loading: state.loading,
-    error: state.error,
-    currentPage: state.currentPage,
-    hasMoreGames: state.hasMoreGames,
+    ...state,
     addGame,
     updateGameName,
     removeGame,
-    setPage,
-    isModalOpen: state.isModalOpen,
-    toggleModal,
-    editingGameId: state.editingGameId,
-    setEditingGame,
+    setPage: (pageNumber) => dispatch({ type: 'SET_PAGE', payload: pageNumber }),
+    toggleModal: () => dispatch({ type: 'TOGGLE_MODAL' }),
+    setEditingGame: (gameId) => dispatch({ type: 'SET_EDITING_GAME', payload: gameId }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
