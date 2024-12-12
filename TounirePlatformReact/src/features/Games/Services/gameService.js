@@ -1,5 +1,4 @@
 import { HttpClient } from '../../../utils/http/HttpClient';
-import { toast } from 'react-toastify';
 
 const httpClient = new HttpClient({ baseURL: 'http://localhost:5030' });
 
@@ -8,11 +7,9 @@ export const fetchGames = async (pageNumber = 1, pageSize = 5) => {
     const data = await httpClient.get(`/Games/GamesList?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     return data;
   } catch (error) {
-    toast.error('Error fetching games: ' + error.message);
     throw new Error('Error fetching games: ' + error.message); 
   }
 };
-
 
 export const createGame = async (newGameName) => {
   try {
@@ -20,17 +17,14 @@ export const createGame = async (newGameName) => {
     const response = await httpClient.post('/Games/CreateGame', newGame);
     return response;
   } catch (error) {
-    toast.error('Error creating game: ' + error.message);
     throw new Error('Error creating game: ' + error.message); 
   }
 };
-
 
 export const deleteGame = async (gameId) => {
   try {
     await httpClient.delete(`/Games/DeleteGame/${gameId}`);
   } catch (error) {
-    toast.error('Error deleting game: ' + error.message);
     throw new Error('Error deleting game: ' + error.message); 
   }
 };
@@ -41,7 +35,6 @@ export const updateGame = async (gameId, updatedGameName) => {
     const response = await httpClient.put('/Games/UpdateGame', updatedGame);
     return response;
   } catch (error) {
-    toast.error('Error updating game: ' + error.message); 
     throw new Error('Error updating game: ' + error.message); 
   }
 };
@@ -51,7 +44,6 @@ export const fetchGameImages = async (gameId) => {
     const images = await httpClient.get(`/file/GameGet/${gameId}`);
     return images;
   } catch (error) {
-    toast.error('Error fetching game images: ' + error.message); 
     throw new Error('Error fetching game images: ' + error.message); 
   }
 };
@@ -66,7 +58,6 @@ export const uploadGameImage = async (file, gameId) => {
     });
     return response;
   } catch (error) {
-    toast.error('Error uploading file: ' + error.message); 
     throw new Error('Error uploading file: ' + error.message); 
   }
 };

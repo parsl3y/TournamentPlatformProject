@@ -1,15 +1,42 @@
-import React, { useState, memo } from 'react';
-import DeleteGame from './DeleteGame';
-import { useUpdateGame } from '../hooks/useUpdateGame';
+import React, { useState, memo, useEffect } from 'react';
+import { useGameContext } from '../context/GameContext';
 import { useUploadGameImage } from '../hooks/useUploadGameImage';
 
-const GameRow = ({ game, games, setGames }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const { handleUpdateGame, setEditedGameName, editedGameName, isEditing, startEditing, cancelEditing } = useUpdateGame();
+const GameRow = ({ game }) => {
+  const { updateGameName, removeGame, editingGameId, setEditingGame } = useGameContext();
   const { handleUploadGameImage, gameImages } = useUploadGameImage();
+
+  const [editedGameName, setEditedGameName] = useState(game.name);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  useEffect(() => {
+    if (editingGameId === game.id) {
+      setEditedGameName(game.name);
+    }
+  }, [editingGameId, game]);
 
   const handleFileChange = (e) => {
     setSelectedFile({ file: e.target.files[0], gameId: game.id });
+  };
+
+  const startEditing = () => {
+    setEditingGame(game.id); 
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setEditedGameName(game.name);
+    setIsEditing(false);
+    setEditingGame(null);  
+  };
+
+  const handleSave = async () => {
+    if (editedGameName.trim()) {
+      await updateGameName(game.id, editedGameName.trim());
+      setIsEditing(false);
+      setEditingGame(null); 
+    }
   };
 
   const handleFileUpload = async () => {
@@ -21,12 +48,12 @@ const GameRow = ({ game, games, setGames }) => {
   return (
     <tr>
       <td>
-        {isEditing === game.id ? (
+        {isEditing ? (
           <input
             type="text"
             value={editedGameName}
             onChange={(e) => setEditedGameName(e.target.value)}
-            placeholder="Enter new game name"
+            className="game-name-input"
           />
         ) : (
           <span>{game.name}</span>
@@ -44,26 +71,17 @@ const GameRow = ({ game, games, setGames }) => {
         <button onClick={handleFileUpload}>Upload</button>
       </td>
       <td>
-        {isEditing === game.id ? (
+        {isEditing ? (
           <>
-            <button
-              onClick={() => handleUpdateGame(game.id, editedGameName, games, setGames)}
-              className="saveBtn"
-            >
-              Save
-            </button>
-            <button onClick={cancelEditing} className="cancelBtn">
-              Cancel
-            </button>
+            <button onClick={handleSave} className="saveBtn">Save</button>
+            <button onClick={cancelEditing} className="cancelBtn">Cancel</button>
           </>
         ) : (
-          <>
-            <button onClick={() => startEditing(game.id, game.name)} className="update-button">
-              Edit
-            </button>
-            <DeleteGame gameId={game.id} onDelete={setGames} />
-          </>
+          <button onClick={startEditing} className="update-button">
+            Edit
+          </button>
         )}
+        <button onClick={() => removeGame(game.id)} className="delete-button">Delete</button>
       </td>
     </tr>
   );

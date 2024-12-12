@@ -1,69 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CreateGame from './CreateGame';
 import GamesTable from './GamesTable';
 import Loading from '../../../components/layouts/Loading';
-import { fetchGames } from '../Services/gameService';
-import 'react-toastify/dist/ReactToastify.css';
 import { FaTimes } from 'react-icons/fa';
+import { useGameContext } from '../context/GameContext';  
 
 const GameContainer = () => {
-  const [games, setGames] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [hasMoreGames, setHasMoreGames] = useState(true);
-
-  useEffect(() => {
-    const loadGames = async () => {
-      try {
-        const gamesData = await fetchGames(currentPage);
-        if (gamesData.length > 0) {
-          setGames(gamesData);
-          setHasMoreGames(gamesData.length === 5); // Якщо елементів менше 5, наступна сторінка недоступна
-        } else {
-          setHasMoreGames(false);
-        }
-
-        setTotalPages(Math.ceil(gamesData.totalCount / 5));
-      } catch (error) {
-        setError(error.message);
-        console.error('Error loading games:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadGames();
-  }, [currentPage]);
+  const {
+    games,
+    loading,
+    error,
+    currentPage,
+    hasMoreGames,
+    isModalOpen,
+    toggleModal,
+    setPage,
+    addGame,
+    removeGame,
+  } = useGameContext(); 
 
   const handleOpenModal = () => {
-    setIsModalOpen(true);
+    toggleModal(); 
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    toggleModal();  
   };
 
   const handleNextPage = () => {
     if (hasMoreGames) {
-      setCurrentPage((prevPage) => prevPage + 1);
+      setPage(currentPage + 1);  
     }
   };
 
   const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    setPage(Math.max(currentPage - 1, 1)); 
   };
 
   const moveLastGameToNextPage = (newGames) => {
-    const newGameList = [...newGames];
-    if (newGameList.length > 5) {
-      const lastGame = newGameList.pop();
-      setGames(newGameList);
-      setCurrentPage((prevPage) => prevPage + 1);
-    } else {
-      setGames(newGameList);
+    if (newGames.length > 5) {
+      setPage(currentPage + 1);  
     }
   };
 
@@ -79,7 +55,7 @@ const GameContainer = () => {
             <button className="close-button" onClick={handleCloseModal}>
               <FaTimes size={20} />
             </button>
-            <CreateGame games={games} setGames={setGames} moveLastGameToNextPage={moveLastGameToNextPage} />
+            <CreateGame addGame={addGame} moveLastGameToNextPage={moveLastGameToNextPage} />
           </div>
         </div>
       )}
@@ -89,7 +65,7 @@ const GameContainer = () => {
       ) : error ? (
         <div className="error-message">Error: {error}</div>
       ) : (
-        <GamesTable games={games} setGames={setGames} />
+        <GamesTable games={games} removeGame={removeGame} />
       )}
 
       <div className="pagination">

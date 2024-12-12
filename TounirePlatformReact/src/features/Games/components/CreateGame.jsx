@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
-import { createGame } from '../Services/gameService'; 
-import { toast } from 'react-toastify'; 
+import { useGameContext } from '../context/GameContext';
 
-const CreateGameComponent = ({ games, setGames }) => {
-  const [newGameName, setNewGameName] = useState(''); 
+const CreateGameComponent = () => {
+  const { addGame } = useGameContext(); 
+  const [newGameName, setNewGameName] = useState('');
 
-  const handleCreateGame = async () => {
-    try {
-      const newGame = await createGame(newGameName);
-      setGames([...games, newGame]);
-      toast.success('Game created successfully!');
-      setNewGameName(''); 
-    } catch (error) {
-      toast.error('Error creating game: ' + error.message);
-    }
+  const handleCreateGame = () => {
+    addGame(newGameName); 
+    setNewGameName('');
   };
 
   return (
@@ -22,7 +16,7 @@ const CreateGameComponent = ({ games, setGames }) => {
       <input
         type="text"
         value={newGameName}
-        onChange={(e) => setNewGameName(e.target.value)} 
+        onChange={(e) => setNewGameName(e.target.value)}
         placeholder="Enter game name"
         className="inputField"
       />
