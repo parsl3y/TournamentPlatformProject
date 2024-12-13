@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
 import Authorization from "./Authentic/AuthForm";
-import "./Authentic/LoginForm.css";
+import "./Authentic/AuthForm.css";
 import { useLogout } from '../../hooks/useLogOut'; 
 
 const AuthPage = () => {

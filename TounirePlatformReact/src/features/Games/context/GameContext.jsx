@@ -16,43 +16,52 @@ const initialState = {
   editingGameId: null,
 };
 
-const gameReducer = (state, action) => {
-  switch (action.type) {
-    case 'FETCH_GAMES_SUCCESS':
-      return {
-        ...state,
-        games: action.payload.games,
-        loading: false,
-        hasMoreGames: action.payload.hasMoreGames,
-      };
-    case 'FETCH_GAMES_FAILURE':
-      return { ...state, loading: false, error: action.payload };
-    case 'ADD_GAME':
-      return { ...state, games: [...state.games, action.payload] };
-    case 'UPDATE_GAME':
-      return {
-        ...state,
-        games: state.games.map((game) =>
-          game.id === action.payload.id ? action.payload : game
-        ),
-      };
-    case 'DELETE_GAME':
-      return {
-        ...state,
-        games: state.games.filter((game) => game.id !== action.payload),
-      };
-    case 'SET_PAGE':
-      return { ...state, currentPage: action.payload };
-    case 'TOGGLE_MODAL':
-      return { ...state, isModalOpen: !state.isModalOpen };
-    case 'SET_EDITING_GAME':
-      return { ...state, editingGameId: action.payload };
-    default:
-      return state;
-  }
+const actionHandlers = {
+  FETCH_GAMES_SUCCESS: (state, action) => ({
+    ...state,
+    games: action.payload.games,
+    loading: false,
+    hasMoreGames: action.payload.hasMoreGames,
+  }),
+  FETCH_GAMES_FAILURE: (state, action) => ({
+    ...state,
+    loading: false,
+    error: action.payload,
+  }),
+  ADD_GAME: (state, action) => ({
+    ...state,
+    games: [...state.games, action.payload],
+  }),
+  UPDATE_GAME: (state, action) => ({
+    ...state,
+    games: state.games.map((game) =>
+      game.id === action.payload.id ? action.payload : game
+    ),
+  }),
+  DELETE_GAME: (state, action) => ({
+    ...state,
+    games: state.games.filter((game) => game.id !== action.payload),
+  }),
+  SET_PAGE: (state, action) => ({
+    ...state, 
+    currentPage: action.payload,
+  }),
+  TOGGLE_MODAL: (state) => ({
+    ...state,
+    isModalOpen: !state.isModalOpen,
+  }),
+  SET_EDITING_GAME: (state, action) => ({
+    ...state,
+    editingGameId: action.payload,
+  }),
 };
 
-const fetchGamesData = async (page, dispatch) => {
+const gameReducer = (state, action) => {
+  const handler = actionHandlers[action.type];
+  return handler ? handler(state, action) : state;
+};
+
+const fetchGamesDataAction = async (page, dispatch) => {
   try {
     const gamesData = await fetchGames(page);
     dispatch({
@@ -72,7 +81,7 @@ export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
   useEffect(() => {
-    fetchGamesData(state.currentPage, dispatch);
+    fetchGamesDataAction(state.currentPage, dispatch);
   }, [state.currentPage]);
 
   const isGameNameDuplicate = (gameName, gameId = null) => {
@@ -81,7 +90,7 @@ export const GameProvider = ({ children }) => {
     );
   };
 
-  const addGame = async (gameName) => {
+  const addGameAction = async (gameName) => {
     if (!gameName.trim()) {
       toast.error('Game name cannot be empty!');
       return;
@@ -93,9 +102,19 @@ export const GameProvider = ({ children }) => {
     try {
       await createGame(gameName.trim());
       toast.success('Game added successfully!');
-      await fetchGamesData(state.currentPage, dispatch);
+      await fetchGamesDataAction(state.currentPage, dispatch);
     } catch (error) {
       toast.error('Error adding game: ' + error.message);
+    }
+  };
+
+  const removeGameAction = async (gameId) => {
+    try {
+      await deleteGame(gameId);
+      toast.success('Game deleted successfully!');
+      await fetchGamesDataAction(state.currentPage, dispatch);
+    } catch (error) {
+      toast.error('Error deleting game: ' + error.message);
     }
   };
 
@@ -120,24 +139,14 @@ export const GameProvider = ({ children }) => {
     }
   };
 
-  const removeGame = async (gameId) => {
-    try {
-      await deleteGame(gameId);
-      toast.success('Game deleted successfully!');
-      await fetchGamesData(state.currentPage, dispatch);
-    } catch (error) {
-      toast.error('Error deleting game: ' + error.message);
-    }
-  };
-
   const value = {
     ...state,
-    addGame,
+    addGameAction,
     updateGameName,
-    removeGame,
-    setPage: (pageNumber) => dispatch({ type: 'SET_PAGE', payload: pageNumber }),
-    toggleModal: () => dispatch({ type: 'TOGGLE_MODAL' }),
-    setEditingGame: (gameId) => dispatch({ type: 'SET_EDITING_GAME', payload: gameId }),
+    removeGameAction,
+    setPageAction: (pageNumber) => dispatch({ type: 'SET_PAGE', payload: pageNumber }),
+    toggleModalAction: () => dispatch({ type: 'TOGGLE_MODAL' }),
+    setEditingGameAction: (gameId) => dispatch({ type: 'SET_EDITING_GAME', payload: gameId }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

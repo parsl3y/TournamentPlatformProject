@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './LoginForm.css';
+import './AuthForm.css';
 
 const Register = ({ onRegister, error }) => {
     const [username, setUsername] = useState("");

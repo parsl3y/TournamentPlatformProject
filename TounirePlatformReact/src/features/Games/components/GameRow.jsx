@@ -3,9 +3,8 @@ import { useGameContext } from '../context/GameContext';
 import { useUploadGameImage } from '../hooks/useUploadGameImage';
 
 const GameRow = ({ game }) => {
-  const { updateGameName, removeGame, editingGameId, setEditingGame } = useGameContext();
+  const { updateGameName, removeGameAction, editingGameId, setEditingGameAction } = useGameContext();
   const { handleUploadGameImage, gameImages } = useUploadGameImage();
-
   const [editedGameName, setEditedGameName] = useState(game.name);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,21 +20,21 @@ const GameRow = ({ game }) => {
   };
 
   const startEditing = () => {
-    setEditingGame(game.id); 
+    setEditingGameAction(game.id); 
     setIsEditing(true);
   };
 
   const cancelEditing = () => {
     setEditedGameName(game.name);
     setIsEditing(false);
-    setEditingGame(null);  
+    setEditingGameAction(null);  
   };
 
   const handleSave = async () => {
     if (editedGameName.trim()) {
       await updateGameName(game.id, editedGameName.trim());
       setIsEditing(false);
-      setEditingGame(null); 
+      setEditingGameAction(null); 
     }
   };
 
@@ -81,7 +80,7 @@ const GameRow = ({ game }) => {
             Edit
           </button>
         )}
-        <button onClick={() => removeGame(game.id)} className="delete-button">Delete</button>
+        <button onClick={() => removeGameAction(game.id)} className="delete-button">Delete</button>
       </td>
     </tr>
   );

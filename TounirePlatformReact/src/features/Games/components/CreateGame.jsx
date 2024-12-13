@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useGameContext } from '../context/GameContext';
 
 const CreateGameComponent = () => {
-  const { addGame } = useGameContext(); 
+  const { addGameAction } = useGameContext(); 
   const [newGameName, setNewGameName] = useState('');
 
   const handleCreateGame = () => {
-    addGame(newGameName); 
+    addGameAction(newGameName); 
     setNewGameName('');
   };
 
